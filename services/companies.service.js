@@ -1,7 +1,7 @@
 "use strict";
 
-const fetch = require('node-fetch');
-const { XML_API_BASE_URL } = require('./constants');
+const fetch = require("node-fetch");
+const { XML_API_BASE_URL } = require("./constants");
 
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
@@ -36,21 +36,35 @@ module.exports = {
 		 * @returns {Object} Company detail
 		 */
 		getDetailById: {
-			rest: "/{id}",
+			rest: "GET /:id",
 			/** @param {Context} ctx  */
 			async handler(ctx) {
 				try {
-					const response = await fetch(XML_API_BASE_URL + `${ctx.params.id}.xml`);
+					const response = await fetch(XML_API_BASE_URL + `/${ctx.params.id}.xml`);
 					const data = await response.text();
 
+					if (!response.ok) {
+						ctx.meta.$statusCode = response.status;
+						ctx.meta.$statusMessage = response.statusText;
+
+						return {
+							error: `Status: ${response.status} | StatusText: ${response.statusText}`,
+							error_description: data
+						};
+					}
+
 					return {
-						status: response.status,
-						data
+						id: this.extractCompanyId(data),
+						name: this.extractCompanyName(data),
+						description: this.extractCompanyDescription(data)
 					};
 				} catch (error) {
 					console.error(error);
 
-					throw error;
+					return {
+						error,
+						error_description: error.message
+					};
 				}
 			}
 		}
@@ -67,7 +81,23 @@ module.exports = {
 	 * Methods
 	 */
 	methods: {
+		extractCompanyId(xmlCompanyDetail) {
+			const match = xmlCompanyDetail && xmlCompanyDetail.match(/<id>(\d+)<\/id>/);
 
+			return match ? match[1] : undefined;
+		},
+
+		extractCompanyName(xmlCompanyDetail) {
+			const match = xmlCompanyDetail && xmlCompanyDetail.match(/<name>([^<]+)<\/name>/);
+
+			return match ? match[1] : undefined;
+		},
+
+		extractCompanyDescription(xmlCompanyDetail) {
+			const match = xmlCompanyDetail && xmlCompanyDetail.match(/<description>([^<]+)<\/description>/);
+
+			return match ? match[1] : undefined;
+		}
 	},
 
 	/**
