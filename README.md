@@ -1,9 +1,5 @@
-[![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
-
 # mwnz-evaluation
 For tech evaluation at MWNZ.
-
-This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
 
 ## Usage
 Start the project with `npm run dev` command. 
@@ -23,9 +19,7 @@ In the terminal, try the following commands:
 
 
 ## Useful links
-
-* Moleculer website: https://moleculer.services/
-* Moleculer Documentation: https://moleculer.services/docs/0.14/
+* Evaluation instructions: https://github.com/MiddlewareNewZealand/evaluation-instructions
 
 ## NPM scripts
 
