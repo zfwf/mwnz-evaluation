@@ -39,13 +39,19 @@ module.exports = {
 			rest: "/{id}",
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				const response = await fetch(XML_API_BASE_URL + `${ctx.params.id}.xml`);
-				const data = await response.text();
+				try {
+					const response = await fetch(XML_API_BASE_URL + `${ctx.params.id}.xml`);
+					const data = await response.text();
 
-				return {
-					status: response.status,
-					data
-				};
+					return {
+						status: response.status,
+						data
+					};
+				} catch (error) {
+					console.error(error);
+
+					throw error;
+				}
 			}
 		}
 	},
